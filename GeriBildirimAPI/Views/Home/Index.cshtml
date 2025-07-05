@@ -1,0 +1,25 @@
+﻿<form id="feedbackForm">
+    <input type="text" id="adSoyad" placeholder="Ad Soyad" required>
+    <textarea id="mesaj" placeholder="Görüşlerinizi yazın..." required></textarea>
+    <button type="submit">Gönder</button>
+</form>
+
+<script>
+    document.getElementById("feedbackForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const adSoyad = document.getElementById("adSoyad").value;
+        const mesaj = document.getElementById("mesaj").value;
+
+        fetch("https://localhost:5001/api/geribildirim/gonder", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ adSoyad, mesaj })
+        })
+        .then(response => response.text())
+        .then(data => alert(data))
+        .catch(error => console.error("Hata:", error));
+    });
+</script>
