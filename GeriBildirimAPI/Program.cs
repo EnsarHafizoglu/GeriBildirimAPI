@@ -4,6 +4,9 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 🌟 ENVIRONMENT VARIABLE'ları da oku
+builder.Configuration.AddEnvironmentVariables();
+
 // MailService'i ekleyelim
 builder.Services.AddSingleton<MailService>();
 
