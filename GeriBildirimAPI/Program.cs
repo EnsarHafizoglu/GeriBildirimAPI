@@ -18,18 +18,19 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy
+            .WithOrigins("http://localhost:3000", "https://seninfrontend.onrender.com") // local ve canlı frontend URL'lerini ekle
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
 var app = builder.Build();
 
-app.UseRouting();
-
-// 🔥 CORS middleware'i burada kullan
+// 🚨 CORS middleware sırasını düzelt!
 app.UseCors("AllowAll");
+
+app.UseRouting();
 
 app.UseAuthorization();
 
