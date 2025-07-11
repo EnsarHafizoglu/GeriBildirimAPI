@@ -22,7 +22,7 @@ public class MailService
             var port = int.Parse(smtpSettings["Port"]);
             var senderName = smtpSettings["SenderName"];
 
-            // ? Sensitive bilgileri environment’dan al
+            // ? ENV’den alýyoruz (Render > Environment Variables ayarlandý!)
             var senderEmail = Environment.GetEnvironmentVariable("SENDER_EMAIL");
             var senderPassword = Environment.GetEnvironmentVariable("SENDER_PASSWORD");
 
@@ -39,7 +39,7 @@ public class MailService
                     IsBodyHtml = false
                 };
 
-                mailMessage.To.Add(senderEmail); // Mail kendine gidecek
+                mailMessage.To.Add(senderEmail);
 
                 Console.WriteLine("?? Mail gönderilmeye çalýþýlýyor...");
                 await client.SendMailAsync(mailMessage);

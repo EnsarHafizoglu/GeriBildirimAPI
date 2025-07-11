@@ -4,23 +4,20 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🌟 ENVIRONMENT VARIABLE'ları da oku
+// 🌟 ENVIRONMENT VARIABLE'ları oku
 builder.Configuration.AddEnvironmentVariables();
 
-// MailService'i ekleyelim
 builder.Services.AddSingleton<MailService>();
-
-// Controller'ları ekleyelim
 builder.Services.AddControllers();
 
-// 🔥 CORS politikası tanımla
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
             .WithOrigins(
-                "https://inquisitive-brioche-f5d22b.netlify.app" 
+                "https://inquisitive-brioche-f5d22b.netlify.app", // React prod site
+                "http://localhost:3000"                          // local React dev için
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
@@ -29,13 +26,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 🚨 ÖNEMLİ: CORS middleware sırası
 app.UseRouting();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();
 
-// 🌟 PORT ayarı: Render gibi ortamlar için gerekli
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Urls.Add($"http://*:{port}");
 
