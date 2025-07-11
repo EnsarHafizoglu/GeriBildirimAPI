@@ -16,10 +16,13 @@ builder.Services.AddControllers();
 // 🔥 CORS politikası tanımla
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000", "https://seninfrontend.onrender.com") // local ve canlı frontend URL'lerini ekle
+            .WithOrigins(
+                "http://localhost:3000",                               // local frontend
+                "https://inquisitive-brioche-f5d22b.netlify.app"     // Netlify canlı frontend
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -27,13 +30,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 🚨 CORS middleware sırasını düzelt!
-app.UseCors("AllowAll");
-
+// 🚨 ÖNEMLİ: CORS middleware sırası
 app.UseRouting();
-
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
-
 app.MapControllers();
 
 // 🌟 PORT ayarı: Render gibi ortamlar için gerekli
