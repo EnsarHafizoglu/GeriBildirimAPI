@@ -18,22 +18,30 @@ public class MailService
         {
             var smtpSettings = _configuration.GetSection("SmtpSettings");
 
-            using (var client = new SmtpClient(smtpSettings["Server"], int.Parse(smtpSettings["Port"])))
+            var server = smtpSettings["Server"];
+            var port = int.Parse(smtpSettings["Port"]);
+            var senderName = smtpSettings["SenderName"];
+
+            // ? Sensitive bilgileri environment’dan al
+            var senderEmail = Environment.GetEnvironmentVariable("SENDER_EMAIL");
+            var senderPassword = Environment.GetEnvironmentVariable("SENDER_PASSWORD");
+
+            using (var client = new SmtpClient(server, port))
             {
-                client.Credentials = new NetworkCredential(smtpSettings["SenderEmail"], smtpSettings["Password"]);
+                client.Credentials = new NetworkCredential(senderEmail, senderPassword);
                 client.EnableSsl = bool.Parse(smtpSettings["EnableSSL"]);
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(smtpSettings["SenderEmail"], smtpSettings["SenderName"]),
+                    From = new MailAddress(senderEmail, senderName),
                     Subject = "Yeni Geri Bildirim Alýndý!",
                     Body = $"Ad Soyad: {adSoyad}\nEmail: {email}\n\nMesaj:\n{mesaj}",
                     IsBodyHtml = false
                 };
 
-                mailMessage.To.Add(smtpSettings["SenderEmail"]); // Mail kendine gidecek
+                mailMessage.To.Add(senderEmail); // Mail kendine gidecek
 
-                Console.WriteLine("? Mail gönderilmeye çalýþýlýyor...");
+                Console.WriteLine("?? Mail gönderilmeye çalýþýlýyor...");
                 await client.SendMailAsync(mailMessage);
                 Console.WriteLine("? Mail baþarýyla gönderildi.");
             }
@@ -43,10 +51,9 @@ public class MailService
             Console.WriteLine("? Mail gönderme hatasý: " + ex.Message);
             if (ex.InnerException != null)
             {
-                Console.WriteLine("?? Ýç hata: " + ex.InnerException.Message);
+                Console.WriteLine("? Ýç hata: " + ex.InnerException.Message);
             }
-            throw; // isteðe baðlý
+            throw;
         }
     }
-
 }
