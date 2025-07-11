@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
@@ -18,11 +18,11 @@ public class MailService
         {
             var smtpSettings = _configuration.GetSection("SmtpSettings");
 
-            var senderEmail = Environment.GetEnvironmentVariable("SENDER_EMAIL");
-            var senderPassword = Environment.GetEnvironmentVariable("SENDER_PASSWORD");
             var server = smtpSettings["Server"];
             var port = int.Parse(smtpSettings["Port"]);
             var senderName = smtpSettings["SenderName"];
+            var senderEmail = smtpSettings["SenderEmail"];
+            var senderPassword = smtpSettings["Password"];
             var enableSsl = bool.Parse(smtpSettings["EnableSSL"]);
 
             using (var client = new SmtpClient(server, port))
@@ -33,22 +33,24 @@ public class MailService
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress(senderEmail, senderName),
-                    Subject = "Yeni Geri Bildirim Al�nd�!",
+                    Subject = "Yeni Geri Bildirim Alındı!",
                     Body = $"Ad Soyad: {adSoyad}\nEmail: {email}\n\nMesaj:\n{mesaj}",
                     IsBodyHtml = false
                 };
 
                 mailMessage.To.Add(senderEmail);
 
+                Console.WriteLine("📧 Mail gönderilmeye çalışılıyor...");
                 await client.SendMailAsync(mailMessage);
+                Console.WriteLine("✅ Mail başarıyla gönderildi.");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine("? Mail g�nderme hatas�: " + ex.Message);
+            Console.WriteLine("❌ Mail gönderme hatası: " + ex.Message);
             if (ex.InnerException != null)
             {
-                Console.WriteLine("? �� hata: " + ex.InnerException.Message);
+                Console.WriteLine("⚠ İç hata: " + ex.InnerException.Message);
             }
             throw;
         }
