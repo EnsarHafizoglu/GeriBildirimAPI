@@ -20,8 +20,7 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "http://localhost:3000",                               // local frontend
-                "https://inquisitive-brioche-f5d22b.netlify.app"     // Netlify canlı frontend
+                "https://inquisitive-brioche-f5d22b.netlify.app" 
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
