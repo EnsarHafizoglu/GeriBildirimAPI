@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🌟 ENVIRONMENT VARIABLE'ları oku
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddSingleton<MailService>();
@@ -16,8 +15,8 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "https://inquisitive-brioche-f5d22b.netlify.app", // React prod site
-                "http://localhost:3000"                          // local React dev için
+                "https://inquisitive-brioche-f5d22b.netlify.app",
+                "http://localhost:3000"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();

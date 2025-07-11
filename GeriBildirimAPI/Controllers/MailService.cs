@@ -18,18 +18,17 @@ public class MailService
         {
             var smtpSettings = _configuration.GetSection("SmtpSettings");
 
+            var senderEmail = Environment.GetEnvironmentVariable("SENDER_EMAIL");
+            var senderPassword = Environment.GetEnvironmentVariable("SENDER_PASSWORD");
             var server = smtpSettings["Server"];
             var port = int.Parse(smtpSettings["Port"]);
             var senderName = smtpSettings["SenderName"];
-
-            // ? ENV’den alýyoruz (Render > Environment Variables ayarlandý!)
-            var senderEmail = Environment.GetEnvironmentVariable("SENDER_EMAIL");
-            var senderPassword = Environment.GetEnvironmentVariable("SENDER_PASSWORD");
+            var enableSsl = bool.Parse(smtpSettings["EnableSSL"]);
 
             using (var client = new SmtpClient(server, port))
             {
                 client.Credentials = new NetworkCredential(senderEmail, senderPassword);
-                client.EnableSsl = bool.Parse(smtpSettings["EnableSSL"]);
+                client.EnableSsl = enableSsl;
 
                 var mailMessage = new MailMessage
                 {
@@ -41,9 +40,7 @@ public class MailService
 
                 mailMessage.To.Add(senderEmail);
 
-                Console.WriteLine("?? Mail gönderilmeye çalýþýlýyor...");
                 await client.SendMailAsync(mailMessage);
-                Console.WriteLine("? Mail baþarýyla gönderildi.");
             }
         }
         catch (Exception ex)
