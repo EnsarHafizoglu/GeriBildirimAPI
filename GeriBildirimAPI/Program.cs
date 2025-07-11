@@ -32,4 +32,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// 🌟 PORT ayarı: Render gibi ortamlar için gerekli
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Urls.Add($"http://*:{port}");
+
 app.Run();
