@@ -16,7 +16,9 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "https://inquisitive-brioche-f5d22b.netlify.app",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                "https://ensarhafizoglu.com",
+                "https://www.ensarhafizoglu.com"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
